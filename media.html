@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Media, Video & Certificate</title>
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: #ffffff;
+      color: #222;
+      width: 100%;
+    }
+
+    h2 {
+      background: linear-gradient(90deg, #69b7eb, #b3c8ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+      font-size: 1.6rem;
+      padding: 10px 20px 5px;
+      margin-top: 40px;
+      text-align: left;
+      padding-left: 20px;
+      border-bottom: 2px solid #ddd;
+      transition: all 0.3s ease;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .h2-icon {
+      font-size: 1.5rem;
+      color: #69b7eb;
+      transition: transform 0.4s ease;
+    }
+
+    h2:hover .h2-icon {
+      transform: rotate(8deg) scale(1.1);
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .section {
+      width: 100%;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 20px;
+      margin: 20px 0;
+      width: 100%;
+    }
+
+    .card {
+      background-color: #f9f9f9;
+      color: #333;
+      width: 100%;
+      max-width: 320px;
+      min-width: 260px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      background-color: #f0f8ff;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #333;
+      margin-top: 10px;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+
+    .card-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .card-title a:hover {
+      text-decoration: underline;
+    }
+
+    .desc {
+      font-size: 0.9rem;
+      color: #555;
+      text-align: left;
+    }
+
+    iframe.cert {
+      width: 100%;
+      height: 360px;
+      border: none;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .video-thumb, .news-thumb {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .pagination {
+      text-align: center;
+      margin: 10px 0 30px;
+    }
+
+    .pagination button {
+      background-color: #f0f0f0;
+      color: #333;
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      margin: 0 3px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .pagination button.active {
+      background-color: #0d6efd; /* Bootstrap primary */
+      color: #fff;
+      border-color: #0a58ca;
+      font-weight: bold;
+    }
+
+    .pagination button:hover:not(.active) {
+      background-color: #cfe2ff; /* light blue on hover */
+      color: #0d6efd;
+      border-color: #b6d4fe;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        width: 100%;
+      }
+
+      iframe.cert {
+        height: 280px;
+      }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      position: relative;
+      width: 90%;
+      max-width: 800px;
+      aspect-ratio: 16 / 9;
+      background: transparent;
+    }
+
+    .modal-content iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: -30px;
+      right: 0;
+      color: #fff;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="section">
+    <h2><i class="bi bi-newspaper h2-icon"></i> Highlight News</h2>
+    <div id="news" class="grid"></div>
+    <div id="news-pagination" class="pagination"></div>
+  </div>
+
+  <div class="section">
+    <h2><i class="bi bi-camera-video h2-icon"></i> Videos</h2>
+    <div id="videos" class="grid"></div>
+    <div id="video-pagination" class="pagination"></div>
+  </div>
+
+  <div class="section">
+    <h2><i class="bi bi-award h2-icon"></i> Certificates</h2>
+    <div id="certificates" class="grid"></div>
+    <div id="cert-pagination" class="pagination"></div>
+  </div>
+
+  <div id="video-modal" class="modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+      <iframe id="modal-iframe" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <script>
+    const sheetID = "1HV-OG6UyYqjA7ZxF3yYIHe4Gqm7dWLKdLmeV6ERVOag";
+    const urls = {
+      news: `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=News`,
+      video: `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=YouTube`,
+      cert: `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=Certificate`
+    };
+
+    let data = { news: [], video: [], cert: [] };
+    let pages = { news: 0, video: 0, cert: 0 };
+    const perPages = { news: 3, video: 3, cert: 3 };
+
+    function fetchData(url, type) {
+      fetch(url)
+        .then(res => res.text())
+        .then(text => {
+          const json = JSON.parse(text.substring(47).slice(0, -2));
+          const rows = json.table.rows.map(row => row.c.map(cell => cell ? cell.v : ""));
+          data[type] = (type === 'news') ? rows.reverse() : rows.slice(1).reverse();
+          renderPage(type, 0);
+        });
+    }
+
+    function renderPagination(type) {
+      const container = document.getElementById(`${type}-pagination`);
+      const pageCount = Math.ceil(data[type].length / perPages[type]);
+      const currentPage = pages[type];
+      let html = '';
+
+      if (pageCount <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+
+      html += `<button onclick="renderPage('${type}', ${Math.max(0, currentPage - 1)})">Prev</button>`;
+
+      let startPage = Math.max(0, currentPage - 4);
+      let endPage = Math.min(pageCount, startPage + 10);
+      if (endPage - startPage < 10) startPage = Math.max(0, endPage - 10);
+
+      for (let i = startPage; i < endPage; i++) {
+        html += `<button class="${i === currentPage ? 'active' : ''}" onclick="renderPage('${type}', ${i})">${i + 1}</button>`;
+      }
+
+      html += `<button onclick="renderPage('${type}', ${Math.min(pageCount - 1, currentPage + 1)})">Next</button>`;
+      container.innerHTML = html;
+    }
+
+    function equalizeHeights(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const cards = container.querySelectorAll('.card');
+      let maxHeight = 0;
+      cards.forEach(card => card.style.height = 'auto');
+      cards.forEach(card => { if (card.offsetHeight > maxHeight) maxHeight = card.offsetHeight; });
+      cards.forEach(card => card.style.height = maxHeight + 'px');
+    }
+
+    function renderPage(type, page) {
+      pages[type] = page;
+      const container = document.getElementById(type === 'news' ? 'news' : (type === 'video' ? 'videos' : 'certificates'));
+      container.innerHTML = "";
+      const start = page * perPages[type];
+      const pageData = data[type].slice(start, start + perPages[type]);
+
+      pageData.forEach(row => {
+        let html = '';
+        if (type === 'news') {
+          const [title, link, desc, thumb] = row;
+          html = `
+            <div class="card">
+              <img src="${thumb}" alt="${title}" class="news-thumb">
+              <div class="card-title"><a href="${link}" target="_blank">${title}</a></div>
+              <div class="desc">${desc}</div>
+            </div>`;
+        } else if (type === 'video') {
+          const [title, videoId, desc] = row;
+          html = `
+            <div class="card">
+              <img src="https://i.ytimg.com/vi/${videoId}/hqdefault.jpg" 
+                   alt="${title}" class="video-thumb" onclick="openModal('${videoId}')">
+              <div class="card-title">${title}</div>
+              <div class="desc">${desc}</div>
+            </div>`;
+        } else if (type === 'cert') {
+          const [title, driveLink, desc] = row;
+          const match = driveLink.match(/[-\w]{25,}/);
+          const fileId = match ? match[0] : "";
+          const embedLink = `https://drive.google.com/file/d/${fileId}/preview`;
+          html = `<div class="card"><iframe class="cert" src="${embedLink}" allow="autoplay"></iframe><div class="card-title">${title}</div><div class="desc">${desc}</div></div>`;
+        }
+        container.innerHTML += html;
+      });
+
+      renderPagination(type);
+      if (type === 'news') equalizeHeights('news');
+      else if (type === 'video') equalizeHeights('videos');
+      else if (type === 'cert') equalizeHeights('certificates');
+    }
+
+    function openModal(videoId) {
+      const modal = document.getElementById("video-modal");
+      const iframe = document.getElementById("modal-iframe");
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("video-modal");
+      const iframe = document.getElementById("modal-iframe");
+      iframe.src = "";
+      modal.style.display = "none";
+    }
+
+    fetchData(urls.news, 'news');
+    fetchData(urls.video, 'video');
+    fetchData(urls.cert, 'cert');
+  </script>
+</body>
+</html>
