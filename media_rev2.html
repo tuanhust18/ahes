@@ -49,6 +49,7 @@
     h2:hover .h2-icon {
       transform: rotate(8deg) scale(1.1);
     }
+
     /* Grid layout for cards */
     .grid {
       display: flex;
@@ -69,10 +70,15 @@
       flex-direction: column;
       cursor: default;
       transition: box-shadow 0.3s ease, transform 0.3s ease;
+      /* Thêm transform-style để hiệu ứng 3D mượt */
+      transform-style: preserve-3d;
     }
+    /* Hiệu ứng hover zoom + nâng + shadow (Yêu cầu 3) */
     .card:hover {
-      box-shadow: 0 6px 15px rgb(13 110 253 / 0.3);
-      transform: translateY(-6px);
+      box-shadow: 0 12px 25px rgb(13 110 253 / 0.4);
+      transform: translateY(-8px) scale(1.05);
+      z-index: 10;
+      position: relative;
     }
 
     /* Images inside cards */
@@ -164,7 +170,10 @@
       position: fixed;
       z-index: 9999;
       inset: 0;
+      /* Thêm dark overlay + blur (Yêu cầu 8) */
       background-color: rgba(33, 37, 41, 0.8);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       justify-content: center;
       align-items: center;
       padding: 16px;
@@ -199,7 +208,7 @@
       z-index: 10;
     }
     .modal-close:hover {
-      color: #003875;
+      color: #0d6efd;
     }
 
     /* Responsive */
@@ -314,7 +323,7 @@
           const [title, link, desc, thumb] = row;
           html = `
             <a href="${link}" target="_blank" class="card" style="text-decoration: none;">
-              <img src="${thumb}" alt="${title}" class="news-thumb">
+              <img src="${thumb}" alt="${title}" class="news-thumb" loading="lazy">
               <div class="card-title">${title}</div>
               <div class="desc">${desc}</div>
             </a>`;
@@ -324,7 +333,7 @@
           html = `
             <div class="card" onclick="openModal('${videoId}')" style="cursor: pointer;">
               <img src="https://i.ytimg.com/vi/${videoId}/hqdefault.jpg" 
-                   alt="${title}" class="video-thumb">
+                   alt="${title}" class="video-thumb" loading="lazy">
               <div class="card-title">${title}</div>
               <div class="desc">${desc}</div>
             </div>`; 
@@ -332,41 +341,53 @@
         } else if (type === 'cert') {
           const [title, driveLink, desc] = row;
           const match = driveLink.match(/[-\w]{25,}/);
-          const fileId = match ? match[0] : "";
-          const embedLink = `https://drive.google.com/file/d/${fileId}/preview`;
-          html = `<div class="card">
-            <iframe class="cert" src="${embedLink}" allow="autoplay"></iframe>
-            <div class="card-title">${title}</div>
-            <div class="desc">${desc}</div>
-          </div>`;
+          const fileId = match ? match[0] : null;
+          if (fileId) {
+            html = `
+              <div class="card">
+                <iframe class="cert" src="https://drive.google.com/file/d/${fileId}/preview" loading="lazy" allowfullscreen></iframe>
+                <div class="card-title">${title}</div>
+                <div class="desc">${desc}</div>
+              </div>`;
+          }
         }
-        container.innerHTML += html;
+
+        container.insertAdjacentHTML('beforeend', html);
       });
   
       renderPagination(type);
-      if (type === 'news') equalizeHeights('news');
-      else if (type === 'video') equalizeHeights('videos');
-      else if (type === 'cert') equalizeHeights('certificates');
+      equalizeHeights(type === 'news' ? 'news' : (type === 'video' ? 'videos' : 'certificates'));
     }
   
     function openModal(videoId) {
-      const modal = document.getElementById("video-modal");
-      const iframe = document.getElementById("modal-iframe");
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-      modal.style.display = "flex";
+      const modal = document.getElementById('video-modal');
+      const iframe = document.getElementById('modal-iframe');
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+      modal.style.display = 'flex';
+      // Thêm focus để thoát modal dễ hơn bằng ESC
+      document.body.style.overflow = 'hidden'; // Disable scroll behind modal
     }
   
     function closeModal() {
-      const modal = document.getElementById("video-modal");
-      const iframe = document.getElementById("modal-iframe");
-      iframe.src = "";
-      modal.style.display = "none";
+      const modal = document.getElementById('video-modal');
+      const iframe = document.getElementById('modal-iframe');
+      iframe.src = '';
+      modal.style.display = 'none';
+      document.body.style.overflow = ''; // Re-enable scroll
     }
   
+    // Đóng modal bằng ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    });
+  
+    // Fetch tất cả dữ liệu khi load trang
     fetchData(urls.news, 'news');
     fetchData(urls.video, 'video');
     fetchData(urls.cert, 'cert');
   </script>
-  
+
 </body>
 </html>
