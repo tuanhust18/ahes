@@ -5,30 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Media, Video & Certificate</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
   <style>
-    /* Reset & base */
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 0;
       font-family: 'Roboto', sans-serif;
       background-color: #f8f9fa;
       color: #212529;
-      width: 100%;
-      line-height: 1.5;
     }
 
-    /* Container section */
     .section {
       max-width: 960px;
       margin: 40px auto;
       padding: 0 20px;
     }
 
-    /* Section Titles */
     h2 {
       display: flex;
       align-items: center;
@@ -39,8 +31,8 @@
       border-bottom: 3px solid #0d6efd;
       padding-bottom: 8px;
       margin-bottom: 24px;
-      user-select: none;
     }
+
     .h2-icon {
       font-size: 1.5rem;
       color: #003875;
@@ -50,7 +42,6 @@
       transform: rotate(8deg) scale(1.1);
     }
 
-    /* Grid layout for cards */
     .grid {
       display: flex;
       flex-wrap: wrap;
@@ -58,30 +49,43 @@
       justify-content: flex-start;
     }
 
-    /* Card styles */
+    .card-wrapper {
+      width: calc(33.333% - 13.33px);
+      min-width: 260px;
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .fade-in-up.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .card {
       background: #fff;
       border: 1px solid #dee2e6;
       border-radius: 12px;
       box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
-      width: calc(33.333% - 13.33px);
-      min-width: 260px;
+      flex: 1;
       display: flex;
       flex-direction: column;
-      cursor: default;
       transition: box-shadow 0.3s ease, transform 0.3s ease;
-      /* Thêm transform-style để hiệu ứng 3D mượt */
       transform-style: preserve-3d;
     }
-    /* Hiệu ứng hover zoom + nâng + shadow (Yêu cầu 3) */
+
     .card:hover {
       box-shadow: 0 12px 25px rgb(13 110 253 / 0.4);
-      transform: translateY(-8px) scale(1.05);
+      transform: scale(1.05) translateY(-8px);
       z-index: 10;
       position: relative;
     }
 
-    /* Images inside cards */
     .video-thumb, .news-thumb {
       border-top-left-radius: 12px;
       border-top-right-radius: 12px;
@@ -91,12 +95,12 @@
       cursor: pointer;
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
+
     .video-thumb:hover, .news-thumb:hover {
       opacity: 0.9;
       transform: scale(1.03);
     }
 
-    /* Certificate iframe */
     iframe.cert {
       width: 100%;
       height: 280px;
@@ -105,7 +109,6 @@
       flex-shrink: 0;
     }
 
-    /* Card content */
     .card-title {
       font-size: 1.1rem;
       font-weight: 700;
@@ -113,15 +116,18 @@
       margin: 14px 16px 8px 16px;
       user-select: text;
     }
+
     .card-title a {
       color: inherit;
       text-decoration: none;
       transition: color 0.2s ease;
     }
+
     .card-title a:hover {
       text-decoration: underline;
       color: #0a58ca;
     }
+
     .desc {
       font-size: 0.95rem;
       color: #495057;
@@ -130,12 +136,12 @@
       user-select: text;
     }
 
-    /* Pagination */
     .pagination {
       margin: 24px 0 8px;
       text-align: center;
       user-select: none;
     }
+
     .pagination button {
       background-color: #fff;
       border: 1px solid #003875;
@@ -146,17 +152,19 @@
       font-weight: 600;
       cursor: pointer;
       transition: background-color 0.3s ease, color 0.3s ease;
-      min-width: 36px;
     }
+
     .pagination button:hover:not(.active) {
       background-color: #003875;
       color: #fff;
     }
+
     .pagination button.active {
       background-color: #003875;
       color: #fff;
       cursor: default;
     }
+
     .pagination button:disabled {
       border-color: #6c757d;
       color: #6c757d;
@@ -164,20 +172,18 @@
       background-color: #e9ecef;
     }
 
-    /* Modal */
     .modal {
       display: none;
       position: fixed;
       z-index: 9999;
       inset: 0;
-      /* Thêm dark overlay + blur (Yêu cầu 8) */
       background-color: rgba(33, 37, 41, 0.8);
       backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
       justify-content: center;
       align-items: center;
       padding: 16px;
     }
+
     .modal-content {
       position: relative;
       width: 90%;
@@ -188,12 +194,14 @@
       box-shadow: 0 8px 30px rgba(0,0,0,0.7);
       overflow: hidden;
     }
+
     .modal-content iframe {
       width: 100%;
       height: 100%;
       border: none;
       border-radius: 12px;
     }
+
     .modal-close {
       position: absolute;
       top: 8px;
@@ -207,29 +215,23 @@
       transition: color 0.3s ease;
       z-index: 10;
     }
+
     .modal-close:hover {
       color: #0d6efd;
     }
 
-    /* Responsive */
     @media (max-width: 900px) {
-      .card {
-        width: calc(50% - 15px);
-      }
+      .card-wrapper { width: calc(50% - 15px); }
     }
+
     @media (max-width: 600px) {
-      .card {
-        width: 100%;
-      }
-      iframe.cert {
-        height: 220px;
-      }
+      .card-wrapper { width: 100%; }
+      iframe.cert { height: 220px; }
     }
   </style>
-
 </head>
-<body>
 
+<body>
   <div class="section">
     <h2><i class="bi bi-newspaper h2-icon"></i> Highlight News</h2>
     <div id="news" class="grid"></div>
@@ -248,7 +250,6 @@
     <div id="cert-pagination" class="pagination"></div>
   </div>
 
-  <!-- Video Modal -->
   <div id="video-modal" class="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
       <span class="modal-close" onclick="closeModal()">&times;</span>
@@ -263,131 +264,119 @@
       video: `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=YouTube`,
       cert: `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=Certificate`
     };
-  
+
     let data = { news: [], video: [], cert: [] };
     let pages = { news: 0, video: 0, cert: 0 };
     const perPages = { news: 3, video: 3, cert: 3 };
-  
+
     function fetchData(url, type) {
       fetch(url)
         .then(res => res.text())
         .then(text => {
           const json = JSON.parse(text.substring(47).slice(0, -2));
           const rows = json.table.rows.map(row => row.c.map(cell => cell ? cell.v : ""));
-          // News đảo ngược cả dữ liệu, video & cert bỏ header rồi đảo ngược
           data[type] = (type === 'news') ? rows.reverse() : rows.slice(1).reverse();
           renderPage(type, 0);
         });
     }
-  
+
     function renderPagination(type) {
       const container = document.getElementById(`${type}-pagination`);
       const pageCount = Math.ceil(data[type].length / perPages[type]);
       const currentPage = pages[type];
-      if (pageCount <= 1) {
-        container.innerHTML = '';
-        return;
-      }
+      if (pageCount <= 1) return container.innerHTML = '';
       let html = `<button onclick="renderPage('${type}', ${Math.max(0, currentPage - 1)})">Prev</button>`;
-      let startPage = Math.max(0, currentPage - 4);
-      let endPage = Math.min(pageCount, startPage + 10);
-      if (endPage - startPage < 10) startPage = Math.max(0, endPage - 10);
-      for (let i = startPage; i < endPage; i++) {
+      for (let i = 0; i < pageCount; i++) {
         html += `<button class="${i === currentPage ? 'active' : ''}" onclick="renderPage('${type}', ${i})">${i + 1}</button>`;
       }
       html += `<button onclick="renderPage('${type}', ${Math.min(pageCount - 1, currentPage + 1)})">Next</button>`;
       container.innerHTML = html;
     }
-  
-    function equalizeHeights(containerId) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      const cards = container.querySelectorAll('.card');
-      let maxHeight = 0;
-      cards.forEach(card => card.style.height = 'auto');
-      cards.forEach(card => { if (card.offsetHeight > maxHeight) maxHeight = card.offsetHeight; });
-      cards.forEach(card => card.style.height = maxHeight + 'px');
-    }
-  
+
     function renderPage(type, page) {
       pages[type] = page;
-      const container = document.getElementById(type === 'news' ? 'news' : (type === 'video' ? 'videos' : 'certificates'));
+      const containerId = type === 'news' ? 'news' : (type === 'video' ? 'videos' : 'certificates');
+      const container = document.getElementById(containerId);
       container.innerHTML = "";
       const start = page * perPages[type];
       const pageData = data[type].slice(start, start + perPages[type]);
-  
+
       pageData.forEach(row => {
         let html = '';
-
         if (type === 'news') {
           const [title, link, desc, thumb] = row;
-          html = `
-            <a href="${link}" target="_blank" class="card" style="text-decoration: none;">
-              <img src="${thumb}" alt="${title}" class="news-thumb" loading="lazy">
-              <div class="card-title">${title}</div>
-              <div class="desc">${desc}</div>
-            </a>`;
-
+          html = `<div class="card-wrapper fade-in-up">
+                    <a href="${link}" target="_blank" class="card" style="text-decoration: none;">
+                      <img src="${thumb}" alt="${title}" class="news-thumb" loading="lazy">
+                      <div class="card-title">${title}</div>
+                      <div class="desc">${desc}</div>
+                    </a>
+                  </div>`;
         } else if (type === 'video') {
           const [title, videoId, desc] = row;
-          html = `
-            <div class="card" onclick="openModal('${videoId}')" style="cursor: pointer;">
-              <img src="https://i.ytimg.com/vi/${videoId}/hqdefault.jpg" 
-                   alt="${title}" class="video-thumb" loading="lazy">
-              <div class="card-title">${title}</div>
-              <div class="desc">${desc}</div>
-            </div>`; 
-
+          html = `<div class="card-wrapper fade-in-up">
+                    <div class="card" onclick="openModal('${videoId}')" style="cursor: pointer;">
+                      <img src="https://i.ytimg.com/vi/${videoId}/hqdefault.jpg" alt="${title}" class="video-thumb" loading="lazy">
+                      <div class="card-title">${title}</div>
+                      <div class="desc">${desc}</div>
+                    </div>
+                  </div>`;
         } else if (type === 'cert') {
           const [title, driveLink, desc] = row;
           const match = driveLink.match(/[-\w]{25,}/);
           const fileId = match ? match[0] : null;
           if (fileId) {
-            html = `
-              <div class="card">
-                <iframe class="cert" src="https://drive.google.com/file/d/${fileId}/preview" loading="lazy" allowfullscreen></iframe>
-                <div class="card-title">${title}</div>
-                <div class="desc">${desc}</div>
-              </div>`;
+            html = `<div class="card-wrapper fade-in-up">
+                      <div class="card">
+                        <iframe class="cert" src="https://drive.google.com/file/d/${fileId}/preview" loading="lazy" allowfullscreen></iframe>
+                        <div class="card-title">${title}</div>
+                        <div class="desc">${desc}</div>
+                      </div>
+                    </div>`;
           }
         }
-
         container.insertAdjacentHTML('beforeend', html);
       });
-  
+
       renderPagination(type);
-      equalizeHeights(type === 'news' ? 'news' : (type === 'video' ? 'videos' : 'certificates'));
+      observeCards();
     }
-  
+
     function openModal(videoId) {
       const modal = document.getElementById('video-modal');
       const iframe = document.getElementById('modal-iframe');
       iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
       modal.style.display = 'flex';
-      // Thêm focus để thoát modal dễ hơn bằng ESC
-      document.body.style.overflow = 'hidden'; // Disable scroll behind modal
+      document.body.style.overflow = 'hidden';
     }
-  
+
     function closeModal() {
       const modal = document.getElementById('video-modal');
-      const iframe = document.getElementById('modal-iframe');
-      iframe.src = '';
+      document.getElementById('modal-iframe').src = '';
       modal.style.display = 'none';
-      document.body.style.overflow = ''; // Re-enable scroll
+      document.body.style.overflow = '';
     }
-  
-    // Đóng modal bằng ESC
-    document.addEventListener('keydown', (e) => {
-      if (e.key === "Escape") {
-        closeModal();
-      }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === "Escape") closeModal();
     });
-  
-    // Fetch tất cả dữ liệu khi load trang
+
+    function observeCards() {
+      const cards = document.querySelectorAll('.fade-in-up');
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      cards.forEach(card => observer.observe(card));
+    }
+
     fetchData(urls.news, 'news');
     fetchData(urls.video, 'video');
     fetchData(urls.cert, 'cert');
   </script>
-
 </body>
 </html>
